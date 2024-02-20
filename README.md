@@ -25,6 +25,6 @@ To run the PHP scripts in this repository, you need the following software insta
 1. Clone the repository to your local machine:
 
    ```bash
-   git clone https://github.com/your-username/php-mysql-database-operations.git
+   https://github.com/Nikul-Parmar-19/To-Do-List-Project--Using-PHP-and-MySQLi.git
 
 
