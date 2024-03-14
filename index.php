@@ -17,7 +17,6 @@ if (!$conn) {
 }
 
 
-
 if(isset($_GET['delete'])){
   $sno = $_GET['delete'];
   $delete = true;
@@ -26,6 +25,7 @@ if(isset($_GET['delete'])){
   $result = mysqli_query($conn, $sql);
 }
 
+// It will perform a edit in notes :
 if($_SERVER['REQUEST_METHOD'] == "POST"){
   if(isset($_POST['snoEdit'])){
       // Update the record :
@@ -68,6 +68,7 @@ if($_SERVER['REQUEST_METHOD'] == "POST"){
 ?>
 
 
+
 <!doctype html>
 <html lang="en">
 
@@ -77,14 +78,31 @@ if($_SERVER['REQUEST_METHOD'] == "POST"){
   <title>iNotes - Notes taking made easy</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
   <link rel="stylesheet" href="//cdn.datatables.net/2.0.0/css/dataTables.dataTables.min.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+
+  <!-- Adding a external css -->
+  <link rel="stylesheet" href="index.css">
+ 
 </head>
 
 <body >
 
-<!-- Edit modal -->
-<!-- <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
-  Launch demo modal
-</button> -->
+<!-- PHP code which will check. if user visit a index.php page without login then this message will appear : -->
+<?php
+session_start();
+if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
+
+
+    echo "<div class='big-container>";
+    echo "<div class='container' style='border: 1px solid #ccc; border-radius: 10px; padding: 20px;'>";
+    echo "<p class='mb-3'>Please login to continue</p>";
+    echo "<a href='login.php' class='btn btn-primary'>Login</a>";
+    echo "</div>";
+    echo "</div>";
+    exit;
+}
+?>
+
 
   <!-- Edit Modal -->
   <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel"
@@ -97,7 +115,7 @@ if($_SERVER['REQUEST_METHOD'] == "POST"){
             <span aria-hidden="true">×</span>
           </button>
         </div>
-        <form action="/Php-turoial-project-todolist/index.php" method="POST">
+        <form action="index.php" method="POST">
           <div class="modal-body">
             <input type="hidden" name="snoEdit" id="snoEdit">
             <div class="form-group">
@@ -119,9 +137,10 @@ if($_SERVER['REQUEST_METHOD'] == "POST"){
     </div>
   </div>
 
+  <!-- This is a navbar , which is taken from a bootstrap -->
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container-fluid">
-      <a class="navbar-brand" href="#"><img src="/Php-turoial-project-todolist/php-logo.png" width="49px" alt=""></a>
+      <a class="navbar-brand" href="#"><img src="php-logo.png" width="49px" alt=""></a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
@@ -145,6 +164,7 @@ if($_SERVER['REQUEST_METHOD'] == "POST"){
     </div>
   </nav>
 
+  <!-- Below a php code will show a success message when user inserted successfully a note -->
   <?php
     if($insert){
       echo  "
@@ -157,6 +177,7 @@ if($_SERVER['REQUEST_METHOD'] == "POST"){
 
   ?>
 
+<!-- Below a php code will show a success message when user updated a notes successfully -->
 <?php
     if($update){
       echo  "
@@ -169,6 +190,7 @@ if($_SERVER['REQUEST_METHOD'] == "POST"){
 
   ?>
 
+<!-- Below a php code will show a success message when user deleted a note from table successfully -->
 <?php
     if($delete){
       echo  "
@@ -182,9 +204,10 @@ if($_SERVER['REQUEST_METHOD'] == "POST"){
 
   ?>
 
+<!-- This is html code for add a Note (with Title a descripton) -->
   <div class="container my-5">
     <h2>Add a Note</h2>
-    <form action="/Php-turoial-project-todolist/index.php" method="post" >
+    <form action="index.php" method="post" >
       <div class="form-group">
         <label for="title" class="form-label">Note Title</label>
         <input type="text" class="form-control" id="title" name="title" >
@@ -199,6 +222,7 @@ if($_SERVER['REQUEST_METHOD'] == "POST"){
     </form>
   </div>
 
+  <!-- THis is html code which whill show a Tabel content, in this php is embedded  -->
   <div class="container my-4">
     
     <table class="table" id="myTable">
@@ -235,49 +259,26 @@ if($_SERVER['REQUEST_METHOD'] == "POST"){
     <hr>
 
   </div>
+        
+  
 
-
+<!-- Here, Javascript logic is written to perform a various task -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+  
   <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
   <script src="//cdn.datatables.net/2.0.0/js/dataTables.min.js"></script>
+  <!-- This below code will show a tabel -->
   <script>
     let table = new DataTable('#myTable');
   </script>
+   <!-- Adding a external Javascript file -->
+   <script src="index.js"></script>
 
-  <script>
-    edits = document.getElementsByClassName('edit');
-    Array.from(edits).forEach((element)=>{
-      element.addEventListener("click", (e)=>{
-        console.log("edit", );
-        tr = e.target.parentNode.parentNode;
-        title = tr.getElementsByTagName("td")[0].innerText;
-        description = tr.getElementsByTagName("td")[1].innerText;
-        console.log(title, description);
-        title.value = title;
-        description.value = description;
-        snoEdit.value = e.target.id;
-        console.log(e.target.id);
-        $('#editModal').modal('toggle');
-      })
-      })
-
-      deletes = document.getElementsByClassName('delete');
-      Array.from(deletes).forEach((element)=>{
-      element.addEventListener("click", (e)=>{
-        console.log("edit", );
-        sno = e.target.id.substr(1,);
-        
-        if(confirm("Are you sure you want to delete this note?")){
-          console.log("Yes");
-          window.location = `/Php-turoial-project-todolist/index.php?delete=${sno}`;
-        }
-        else{
-          console.log("no");
-        }
-      })
-      })
-    
-  </script>
 </body>
-
+<footer>
+  <!-- This code is logout button -->
+  <div class="container">
+    <a href="logout.php" class="btn btn-danger">Logout</a>
+  </div>
+</footer>
 </html>
